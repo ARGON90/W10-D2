@@ -1,4 +1,11 @@
-// ------------------------------  SERVER DATA ------------------------------  
+// ------------------------------  SERVER DATA ------------------------------
+const express = require("express");
+const app = express();
+app.use(express.json());
+require("express-async-errors");
+let dogsRouter = express.Router();
+
+// app.use("/dogs", express.static("routes"))
 
 let nextDogId = 1;
 function getNewDogId() {
@@ -10,15 +17,15 @@ function getNewDogId() {
 const dogs = [
   {
     dogId: getNewDogId(),
-    name: "Fluffy"
+    name: "Fluffy",
   },
   {
     dogId: getNewDogId(),
-    name: "Digby"
-  }
+    name: "Digby",
+  },
 ];
 
-// ------------------------------  MIDDLEWARES ------------------------------ 
+// ------------------------------  MIDDLEWARES ------------------------------
 
 const validateDogInfo = (req, res, next) => {
   if (!req.body || !req.body.name) {
@@ -30,17 +37,17 @@ const validateDogInfo = (req, res, next) => {
 };
 const validateDogId = (req, res, next) => {
   const { dogId } = req.params;
-  const dog = dogs.find(dog => dog.dogId == dogId);
+  const dog = dogs.find((dog) => dog.dogId == dogId);
   if (!dog) {
-    const err = new Error("Couldn't find dog with that dogId")
+    const err = new Error("Couldn't find dog with that dogId");
     err.statusCode = 404;
     throw err;
     // return next(err); // alternative to throwing it
   }
   next();
-}
+};
 
-// ------------------------------  ROUTE HANDLERS ------------------------------  
+// ------------------------------  ROUTE HANDLERS ------------------------------
 
 // GET /dogs
 const getAllDogs = (req, res) => {
@@ -50,16 +57,16 @@ const getAllDogs = (req, res) => {
 // GET /dogs/:dogId
 const getDogById = (req, res) => {
   const { dogId } = req.params;
-  const dog = dogs.find(dog => dog.dogId == dogId);
+  const dog = dogs.find((dog) => dog.dogId == dogId);
   res.json(dog);
-}
+};
 
 // POST /dogs
 const createDog = (req, res) => {
   const { name } = req.body;
   const newDog = {
     dogId: getNewDogId(),
-    name
+    name,
   };
   dogs.push(newDog);
   res.json(newDog);
@@ -69,7 +76,7 @@ const createDog = (req, res) => {
 const updateDog = (req, res) => {
   const { name } = req.body;
   const { dogId } = req.params;
-  const dog = dogs.find(dog => dog.dogId == dogId);
+  const dog = dogs.find((dog) => dog.dogId == dogId);
   dog.name = name;
   res.json(dog);
 };
@@ -77,11 +84,36 @@ const updateDog = (req, res) => {
 // DELETE /dogs/:dogId
 const deleteDog = (req, res) => {
   const { dogId } = req.params;
-  const dogIdx = dogs.findIndex(dog => dog.dogId == dogId);
+  const dogIdx = dogs.findIndex((dog) => dog.dogId == dogId);
   dogs.splice(dogIdx, 1);
   res.json({ message: "success" });
 };
 
-// ------------------------------  ROUTER ------------------------------  
+// ------------------------------  ROUTER ------------------------------
 
-// Your code here
+dogsRouter.get("/", (req, res) => {
+  getAllDogs(req, res);
+});
+
+dogsRouter.get("/:dogId", (req, res) => {
+  validateDogId(req, res);
+  getDogById(req, res);
+});
+
+dogsRouter.post("/", (req, res) => {
+  validateDogInfo(req, res);
+  createDog(req, res);
+});
+
+dogsRouter.put("/:dogId", (req, res) => {
+  validateDogId(req, res);
+  validateDogInfo(req, res);
+  updateDog(req, res);
+});
+
+dogsRouter.delete("/:dogId", (req, res) => {
+  validateDogId(req, res);
+  deleteDog(req, res);
+});
+
+module.exports = dogsRouter;
