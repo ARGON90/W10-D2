@@ -91,29 +91,25 @@ const deleteDog = (req, res) => {
 
 // ------------------------------  ROUTER ------------------------------
 
-dogsRouter.get("/", (req, res) => {
-  getAllDogs(req, res);
-});
+dogsRouter.get("/", getAllDogs);
 
-dogsRouter.get("/:dogId", (req, res) => {
-  validateDogId(req, res);
-  getDogById(req, res);
-});
+dogsRouter.get("/:dogId", validateDogId, getDogById); //Wgat the heck was next doing???
 
-dogsRouter.post("/", (req, res) => {
-  validateDogInfo(req, res);
-  createDog(req, res);
-});
+dogsRouter.post("/", validateDogInfo, createDog);
+// dogsRouter.post("/", (req, res, next) => {
+//     console.log("lol")
+//   validateDogInfo(req, res, next);
+//   createDog(req, res);
+// });
 
-dogsRouter.put("/:dogId", (req, res) => {
-  validateDogId(req, res);
-  validateDogInfo(req, res);
-  updateDog(req, res);
-});
+dogsRouter.put("/:dogId", validateDogId, validateDogInfo, updateDog);
 
-dogsRouter.delete("/:dogId", (req, res) => {
-  validateDogId(req, res);
-  deleteDog(req, res);
-});
+// dogsRouter.put("/:dogId", (req, res) => {
+//   validateDogId(req, res);
+//   validateDogInfo(req, res);
+//   updateDog(req, res);
+// });
+
+dogsRouter.delete("/:dogId", validateDogId, deleteDog);
 
 module.exports = dogsRouter;
