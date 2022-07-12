@@ -3,7 +3,17 @@ const app = express();
 app.use(express.json());
 require("express-async-errors");
 
-app.use("/static/whatever", express.static("assets"));
+app.use("/static", express.static("assets"));
+console.log("Hello!")
+
+app.use((req, res, next) => {
+  console.log("Method is", req.method);
+  console.log("URL Path", req.url);
+  console.log("Method status is", res.statusCode);
+  console.log(req)
+  next();
+});
+
 // For testing purposes, GET /
 app.get("/", (req, res) => {
   res.json(
