@@ -4,13 +4,16 @@ app.use(express.json());
 require("express-async-errors");
 
 app.use("/static", express.static("assets"));
-console.log("Hello!")
+
+console.log("Hello!");
 
 app.use((req, res, next) => {
   console.log("Method is", req.method);
   console.log("URL Path", req.url);
-  console.log("Method status is", res.statusCode);
-  console.log(req)
+  console.log("StatusCode");
+  res.on("finish", () => {
+    console.log(res.statusCode);
+  });
   next();
 });
 
@@ -32,6 +35,23 @@ app.post("/test-json", (req, res, next) => {
 // For testing express-async-errors
 app.get("/test-error", async (req, res) => {
   throw new Error("Hello World!");
+});
+
+app.use((req, res, next) => {
+  let error = new Error("That don't work.");
+  error.status = 404;
+  next(error);
+});
+
+app.use((err, req, res, next) => {
+  let statuscode = err.status || 500;
+  res.status(statuscode);
+
+  console.log(err.message);
+  res.json({
+    message: err.message || "Stop that",
+    "Error Code": statuscode,
+  });
 });
 
 const port = 5000;
