@@ -3,6 +3,7 @@ const app = express();
 app.use(express.json());
 require("express-async-errors");
 const dogsRouter = require("./routes/dogs");
+const foodRouter = require("./routes/dog-foods");
 
 app.use("/static", express.static("assets"));
 
