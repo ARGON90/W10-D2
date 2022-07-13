@@ -64,9 +64,10 @@ const foodsRouter = express.Router({ mergeParams: true });
 
 foodsRouter.get(
   "/:dogId/foods",
-  validateDogId,
   validateFoodInfo,
   getFoodsByDogId
 );
 
-foodsRouter.post("/dogsId/foods", validateDogId, validateFoodInfo, createFood);
+foodsRouter.post("/dogsId/foods", validateFoodInfo, createFood);
+
+module.exports = foodsRouter;

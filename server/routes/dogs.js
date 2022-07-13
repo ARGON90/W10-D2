@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 require("express-async-errors");
+
 let dogsRouter = express.Router();
 
 // app.use("/dogs", express.static("routes"))
@@ -111,5 +112,7 @@ dogsRouter.put("/:dogId", validateDogId, validateDogInfo, updateDog);
 // });
 
 dogsRouter.delete("/:dogId", validateDogId, deleteDog);
+
+dogsRouter.use("/:dogId/foods", validateDogId, foodRouter)
 
 module.exports = dogsRouter;
